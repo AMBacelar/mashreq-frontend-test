@@ -4,20 +4,23 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "dev": "expo start --web",
+    "dev": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-picker/picker": "^2.7.7",
     "@repo/ui": "*",
+    "@tamagui/babel-plugin": "^1.108.2",
     "expo": "^51.0.26",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
-    "react-native-web": "^0.19.10"
+    "react-native-web": "^0.19.10",
+    "tamagui": "^1.108.2"
   },
   "devDependencies": {
     "@babel/core": "^7.23.7",
