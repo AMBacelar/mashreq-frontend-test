@@ -3,8 +3,10 @@ TODOs:
 - [x] monorepo setup
 - [x] simple register screen
 - [ ] registration input field validation
+  - Let's use a library!
 - [ ] set up i18n
-- [ ] set up user country wide themeing (provider, I guess)
+- [x] set up user country wide themeing (provider, I guess)
+- [ ] actually implement themeing with the provider somehow...
 
 # initial assumptions
 

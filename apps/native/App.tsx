@@ -3,17 +3,18 @@ import { Picker } from '@react-native-picker/picker';
 import { StatusBar } from "expo-status-bar";
 import { Button } from "@repo/ui";
 import { useState } from "react";
+import { ThemeProvider, useTheme } from "./providers/theme";
 
-export default function Native() {
+export function Native() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [country, setCountry] = useState("UAE");
+  // const [country, setCountry] = useState("UAE");
+  const { country, theme, setCountry } = useTheme();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Native</Text>
+      <Text style={styles.header}>Native App with {theme}</Text>
       <TextInput
         style={styles.input}
         value={username}
@@ -42,9 +43,10 @@ export default function Native() {
         onValueChange={(itemValue, itemIndex) =>
           setCountry(itemValue)
         }>
-        <Picker.Item label="United Arab Emirates" value="uae" />
-        <Picker.Item label="India" value="india" />
-        <Picker.Item label="United Kingdom" value="uk" />
+        <Picker.Item label="United Arab Emirates" value="UAE" />
+        <Picker.Item label="India" value="India" />
+        <Picker.Item label="United Kingdom" value="UK" />
+        <Picker.Item label="Portugal" value="Portugal" />
       </Picker>
 
       <Button
@@ -58,6 +60,16 @@ export default function Native() {
     </View>
   );
 }
+
+const App = () => {
+  return (
+    <ThemeProvider>
+      <Native />
+    </ThemeProvider>
+  )
+}
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
