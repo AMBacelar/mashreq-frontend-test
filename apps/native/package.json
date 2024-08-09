@@ -15,6 +15,8 @@
     "@tamagui/babel-plugin": "^1.108.2",
     "@tamagui/config": "^1.108.2",
     "@tamagui/lucide-icons": "^1.108.2",
+    "@tanstack/react-form": "0.29.0",
+    "@tanstack/yup-form-adapter": "^0.28.0",
     "expo": "^51.0.26",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
@@ -22,7 +24,8 @@
     "react-native": "0.74.5",
     "react-native-svg": "^15.5.0",
     "react-native-web": "^0.19.10",
-    "tamagui": "^1.108.2"
+    "tamagui": "^1.108.2",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.7",

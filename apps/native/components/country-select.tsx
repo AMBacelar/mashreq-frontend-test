@@ -26,6 +26,8 @@ export const CountrySelect: React.FC = (props: SelectProps) => {
           native
           modal
           dismissOnSnapToBottom
+          snapPoints={[30, 50]}
+          snapPointsMode='percent'
           animationConfig={{
             type: 'spring',
             damping: 20,
@@ -61,20 +63,6 @@ export const CountrySelect: React.FC = (props: SelectProps) => {
               </Select.Item>
             ))}
           </Select.Group>
-          <YStack
-            position="absolute"
-            right={0}
-            top={0}
-            bottom={0}
-            alignItems="center"
-            justifyContent="center"
-            width={'$4'}
-            pointerEvents="none"
-          >
-            <Check
-              size={getFontSize('$true')}
-            />
-          </YStack>
         </Select.Viewport>
         <Select.ScrollDownButton />
       </Select.Content>

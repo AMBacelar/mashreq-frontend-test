@@ -1,66 +1,146 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, GestureResponderEvent } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Button } from "@repo/ui";
-import { useState } from "react";
 import { ThemeProvider, useTheme } from "./providers/theme";
 import { CountrySelect } from "./components/country-select";
-import { TamaguiProvider } from "tamagui";
+import { TamaguiProvider, YStack } from "tamagui";
 import tamaguiConfig from './tamagui.config';
+import { FieldApi, useForm } from '@tanstack/react-form';
+import { yupValidator } from '@tanstack/yup-form-adapter'
+import * as yup from 'yup'
+
+const FieldInfo = ({ field }: { field: FieldApi<any, any, any, any> }) => {
+  return (
+    <YStack>
+      {field.state.meta.isTouched && field.state.meta.errors.length ? (
+        <Text>{field.state.meta.errors.join(',')}</Text>
+      ) : null}
+      {field.state.meta.isValidating ? <Text>'Validating...'</Text> : null}
+    </YStack>
+  )
+}
 
 export function Native() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const { theme } = useTheme();
 
+  const MyForm = useForm({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    onSubmit: async ({ value }) => {
+      // Do something with form data
+      console.log(value)
+      alert('Form submitted')
+    },
+    validatorAdapter: yupValidator(),
+  })
+
   return (
-    <View style={styles.container}>
+    <YStack ai='center' jc='center' h='100%'>
       <Text style={styles.header}>Native App with {theme}</Text>
-      <TextInput
-        style={styles.input}
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Type something here..."
+
+      <MyForm.Field
+        name="username"
+        validators={{
+          onChange: yup.string().required('Username is required'),
+        }}
+        children={(field) => (
+          <YStack w='80%'>
+            <Text>Username</Text>
+            <TextInput
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              style={styles.input}
+            />
+            <FieldInfo field={field} />
+          </YStack>
+        )}
       />
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password..."
-        secureTextEntry={true}
+
+      <MyForm.Field
+        name="email"
+        validators={{
+          onChange: yup.string().email().required('Email is required'),
+        }}
+        children={(field) => (
+          <YStack w='80%'>
+            <Text>Email</Text>
+            <TextInput
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              style={styles.input}
+            />
+            <FieldInfo field={field} />
+          </YStack>
+        )}
       />
-      <TextInput
-        style={styles.input}
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        placeholder="confirm password..."
-        secureTextEntry={true}
+
+      <MyForm.Field
+        name="password"
+        validators={{
+          onChange: yup.string()
+            .required('Password is required')
+            .min(8, 'Password must be at least 8 characters long')
+            .matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+            ),
+        }}
+        children={(field) => (
+          <YStack w='80%'>
+            <Text>Password</Text>
+            <TextInput
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              style={styles.input}
+              secureTextEntry
+            />
+            <FieldInfo field={field} />
+          </YStack>
+        )}
+      />
+      <MyForm.Field
+        name="confirmPassword"
+        validators={{
+          onChange: ({ value, fieldApi }) => value === fieldApi.form.state.values.password ? undefined : 'Passwords do not match',
+        }}
+        children={(field) => (
+          <YStack w='80%'>
+            <Text>Confirm Password</Text>
+            <TextInput
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              style={styles.input}
+              secureTextEntry
+            />
+            <FieldInfo field={field} />
+          </YStack>
+        )}
       />
 
       <CountrySelect />
 
-      {/* <Picker
-        style={{ width: "100%" }}
-        mode="dropdown"
-        selectedValue={country}
-        onValueChange={(itemValue, itemIndex) =>
-          setCountry(itemValue)
-        }>
-        <Picker.Item label="United Arab Emirates" value="UAE" />
-        <Picker.Item label="India" value="India" />
-        <Picker.Item label="United Kingdom" value="UK" />
-        <Picker.Item label="Portugal" value="Portugal" />
-      </Picker> */}
-
-      <Button
-        onClick={() => {
-          console.log("Pressed!");
-          alert("Pressed!");
-        }}
-        text="Register"
+      <MyForm.Subscribe
+        selector={state => [state.canSubmit, state.isSubmitting]}
+        children={([canSubmit, isSubmitting]) => (
+          <Button
+            disabled={!canSubmit || isSubmitting}
+            text={canSubmit ?
+              isSubmitting ? "Submitting..." : "Register"
+              : "can't submit yet"}
+            onPress={(e: GestureResponderEvent) => {
+              e.preventDefault();
+              e.stopPropagation();
+              MyForm.handleSubmit();
+            }}
+          />
+        )}
       />
       <StatusBar style="auto" />
-    </View>
+    </YStack>
   );
 }
 
@@ -93,7 +173,5 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 1,
     padding: 10,
-    marginBottom: 20,
-    width: "80%",
   }
 });
