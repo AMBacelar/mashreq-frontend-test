@@ -1,3 +1,11 @@
+TODOs:
+
+- [x] monorepo setup
+- [ ] simple register screen
+- [ ] registration input field validation
+- [ ] set up i18n
+- [ ] set up user country wide themeing (provider, I guess)
+
 # initial assumptions
 
 globally:
