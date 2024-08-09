@@ -1,6 +1,26 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-type Country = 'UK' | 'UAE' | 'India' | 'Portugal';
+export const validCountries = [
+  {
+    name: 'United Kingdom',
+    code: 'UK',
+  },
+  {
+    name: 'United Arab Emirates',
+    code: 'UAE',
+  },
+  {
+    name: 'India',
+    code: 'India',
+  },
+  {
+    name: 'Portugal',
+    code: 'Portugal',
+  }
+] as const;
+
+export const countries = validCountries.map(country => country.name);
+type Country = typeof validCountries[number]['code'];
 
 interface ThemeContextType {
   country: Country;

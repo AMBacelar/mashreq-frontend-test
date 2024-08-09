@@ -1,16 +1,17 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
-import { Picker } from '@react-native-picker/picker';
 import { StatusBar } from "expo-status-bar";
 import { Button } from "@repo/ui";
 import { useState } from "react";
 import { ThemeProvider, useTheme } from "./providers/theme";
+import { CountrySelect } from "./components/country-select";
+import { TamaguiProvider } from "tamagui";
+import tamaguiConfig from './tamagui.config';
 
 export function Native() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const [country, setCountry] = useState("UAE");
-  const { country, theme, setCountry } = useTheme();
+  const { theme } = useTheme();
 
   return (
     <View style={styles.container}>
@@ -36,7 +37,9 @@ export function Native() {
         secureTextEntry={true}
       />
 
-      <Picker
+      <CountrySelect />
+
+      {/* <Picker
         style={{ width: "100%" }}
         mode="dropdown"
         selectedValue={country}
@@ -47,7 +50,7 @@ export function Native() {
         <Picker.Item label="India" value="India" />
         <Picker.Item label="United Kingdom" value="UK" />
         <Picker.Item label="Portugal" value="Portugal" />
-      </Picker>
+      </Picker> */}
 
       <Button
         onClick={() => {
@@ -63,9 +66,11 @@ export function Native() {
 
 const App = () => {
   return (
-    <ThemeProvider>
-      <Native />
-    </ThemeProvider>
+    <TamaguiProvider config={tamaguiConfig}>
+      <ThemeProvider>
+        <Native />
+      </ThemeProvider>
+    </TamaguiProvider>
   )
 }
 
