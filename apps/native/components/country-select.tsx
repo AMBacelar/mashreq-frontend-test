@@ -1,19 +1,20 @@
 import React from 'react';
-import { Select, getFontSize, YStack, SelectProps, Adapt, Sheet } from 'tamagui';
+import { Select, SelectProps, Adapt, Sheet } from 'tamagui';
 import { useTheme, validCountries } from '../providers/theme';
-import { Check, ChevronDown } from '@tamagui/lucide-icons';
+import { ChevronDown } from '@tamagui/lucide-icons';
 
-export const CountrySelect: React.FC = (props: SelectProps) => {
-  const { country, setCountry } = useTheme();
+export const CountrySelect = (props: SelectProps & { handleValueChange: (newVal: string) => void }) => {
+  const { setCountry } = useTheme();
 
-  const handleCountryChange = (value: string) => {
-    setCountry(value as any);  // Type assertion as Country
+  const handleChange = (newVal: string) => {
+    setCountry(newVal as any);
+    props.handleValueChange(newVal);  // Type assertion as Country
   };
 
   return (
     <Select
-      value={country}
-      onValueChange={handleCountryChange}
+      value={props.value}
+      onValueChange={handleChange}
       disablePreventBodyScroll
       {...props}
     >

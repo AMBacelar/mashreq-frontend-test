@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, TextInput, GestureResponderEvent } from "react-native";
+import { StyleSheet, Text, TextInput, GestureResponderEvent } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Button } from "@repo/ui";
-import { ThemeProvider, useTheme } from "./providers/theme";
+import { ThemeProvider, useTheme, validCountries } from "./providers/theme";
 import { CountrySelect } from "./components/country-select";
 import { TamaguiProvider, YStack } from "tamagui";
 import tamaguiConfig from './tamagui.config';
@@ -20,8 +20,15 @@ const FieldInfo = ({ field }: { field: FieldApi<any, any, any, any> }) => {
   )
 }
 
+const usernameSchemas = {
+  'India': yup.string().required('Username is required').matches(/^[a-zA-Z].{6,}$/, 'Username must start with a letter and be at least 6 characters long'),
+  'Portugal': yup.string().required('Username is required').min(5, 'Username must be at least 5 characters long'),
+  'UAE': yup.string().required('Username is required').matches(/[a-zA-Z0-9].{5,}$/, 'Username must be alphanumeric and be at least 5 characters long'),
+  'UK': yup.string().required('Username is required').min(5, 'Username must be at least 5 characters long'),
+}
+
 export function Native() {
-  const { theme } = useTheme();
+  const { theme, country } = useTheme();
 
   const MyForm = useForm({
     defaultValues: {
@@ -29,11 +36,12 @@ export function Native() {
       email: '',
       password: '',
       confirmPassword: '',
+      country,
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(value)
-      alert('Form submitted')
+      console.log(value);
+      alert('Form submitted');
     },
     validatorAdapter: yupValidator(),
   })
@@ -45,14 +53,17 @@ export function Native() {
       <MyForm.Field
         name="username"
         validators={{
-          onChange: yup.string().required('Username is required'),
+          onChangeListenTo: ['country'],
+          onChange: usernameSchemas[country],
         }}
         children={(field) => (
           <YStack w='80%'>
             <Text>Username</Text>
             <TextInput
               value={field.state.value}
-              onChangeText={field.handleChange}
+              onChangeText={(newVal) => {
+                field.handleChange(newVal)
+              }}
               style={styles.input}
             />
             <FieldInfo field={field} />
@@ -105,7 +116,13 @@ export function Native() {
       <MyForm.Field
         name="confirmPassword"
         validators={{
-          onChange: ({ value, fieldApi }) => value === fieldApi.form.state.values.password ? undefined : 'Passwords do not match',
+          onChangeListenTo: ['password'],
+          onChange: ({ value, fieldApi }) => {
+            if (value !== fieldApi.form.getFieldValue('password')) {
+              return 'Passwords do not match'
+            }
+            return undefined
+          },
         }}
         children={(field) => (
           <YStack w='80%'>
@@ -121,7 +138,19 @@ export function Native() {
         )}
       />
 
-      <CountrySelect />
+      <MyForm.Field
+        name="country"
+        validators={{
+          onChange: yup.string().oneOf(validCountries.map(c => c.code)).required('Country is required')
+        }}
+        children={(field) => (
+          <YStack w='80%'>
+            <Text>County of Residence</Text>
+            <CountrySelect value={field.state.value} handleValueChange={field.handleChange}
+            />
+          </YStack>
+        )}
+      />
 
       <MyForm.Subscribe
         selector={state => [state.canSubmit, state.isSubmitting]}
