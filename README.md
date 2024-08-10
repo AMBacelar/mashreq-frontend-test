@@ -3,7 +3,7 @@ TODOs:
 - [x] monorepo setup
 - [x] simple register screen
 - [x] registration input field validation
-- [ ] Set up validation depending on selected country
+- [x] Set up validation depending on selected country
 - [ ] set up i18n
 - [x] set up user country wide themeing (provider, I guess)
 - [ ] actually implement themeing with the provider somehow...
