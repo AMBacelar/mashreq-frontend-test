@@ -4,9 +4,13 @@ TODOs:
 - [x] simple register screen
 - [x] registration input field validation
 - [x] Set up validation depending on selected country
-- [ ] set up i18n
+- [x] set up i18n
 - [x] set up user country wide themeing (provider, I guess)
 - [ ] actually implement themeing with the provider somehow...
+- [ ] log in screen
+- [ ] post log in screen
+
+- [ ] set up web app
 
 # initial assumptions
 

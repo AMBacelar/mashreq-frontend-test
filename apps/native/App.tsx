@@ -8,6 +8,8 @@ import tamaguiConfig from './tamagui.config';
 import { FieldApi, useForm } from '@tanstack/react-form';
 import { yupValidator } from '@tanstack/yup-form-adapter'
 import * as yup from 'yup'
+import { useEffect, useMemo } from "react";
+import { strings } from './strings';
 
 const FieldInfo = ({ field }: { field: FieldApi<any, any, any, any> }) => {
   return (
@@ -15,16 +17,9 @@ const FieldInfo = ({ field }: { field: FieldApi<any, any, any, any> }) => {
       {field.state.meta.isTouched && field.state.meta.errors.length ? (
         <Text>{field.state.meta.errors.join(',')}</Text>
       ) : null}
-      {field.state.meta.isValidating ? <Text>'Validating...'</Text> : null}
+      {field.state.meta.isValidating ? <Text>{strings.en.validating}</Text> : null}
     </YStack>
   )
-}
-
-const usernameSchemas = {
-  'India': yup.string().required('Username is required').matches(/^[a-zA-Z].{6,}$/, 'Username must start with a letter and be at least 6 characters long'),
-  'Portugal': yup.string().required('Username is required').min(5, 'Username must be at least 5 characters long'),
-  'UAE': yup.string().required('Username is required').matches(/[a-zA-Z0-9].{5,}$/, 'Username must be alphanumeric and be at least 5 characters long'),
-  'UK': yup.string().required('Username is required').min(5, 'Username must be at least 5 characters long'),
 }
 
 export function Native() {
@@ -39,26 +34,44 @@ export function Native() {
       country,
     },
     onSubmit: async ({ value }) => {
-      // Do something with form data
       console.log(value);
-      alert('Form submitted');
+      alert(strings.en.formSubmitted);
     },
     validatorAdapter: yupValidator(),
-  })
+  });
+
+  const usernameSchemas = useMemo(() => ({
+    'India': yup.string().required(strings.en.errors.usernameRequired)
+      .matches(/^[a-zA-Z].{5,}$/, strings.en.usernameSchemaMessages.India),
+    'Portugal': yup.string().required(strings.en.errors.usernameRequired)
+      .min(5, strings.en.usernameSchemaMessages.Portugal),
+    'UAE': yup.string().required(strings.en.errors.usernameRequired)
+      .matches(/[a-zA-Z0-9].{4,}$/, strings.en.usernameSchemaMessages.UAE),
+    'UK': yup.string().required(strings.en.errors.usernameRequired)
+      .min(5, strings.en.usernameSchemaMessages.UK),
+  }), []);
+
+  useEffect(() => {
+    const meta = MyForm.getFieldMeta('username');
+    if (meta && !meta.isPristine && meta.isTouched && !meta.isValidating) {
+      MyForm.validateField('username', 'change');
+    }
+  }, [country]);
 
   return (
     <YStack ai='center' jc='center' h='100%'>
-      <Text style={styles.header}>Native App with {theme}</Text>
+      <Text style={styles.header}>{strings.en.header} {theme}</Text>
 
       <MyForm.Field
         name="username"
         validators={{
           onChangeListenTo: ['country'],
-          onChange: usernameSchemas[country],
+          onBlurListenTo: ['country'],
+          onChange: usernameSchemas[MyForm.getFieldValue('country')],
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>Username</Text>
+            <Text>{strings.en.usernameLabel}</Text>
             <TextInput
               value={field.state.value}
               onChangeText={(newVal) => {
@@ -74,11 +87,11 @@ export function Native() {
       <MyForm.Field
         name="email"
         validators={{
-          onChange: yup.string().email().required('Email is required'),
+          onChange: yup.string().email().required(strings.en.errors.emailRequired),
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>Email</Text>
+            <Text>{strings.en.emailLabel}</Text>
             <TextInput
               value={field.state.value}
               onChangeText={field.handleChange}
@@ -93,16 +106,16 @@ export function Native() {
         name="password"
         validators={{
           onChange: yup.string()
-            .required('Password is required')
-            .min(8, 'Password must be at least 8 characters long')
+            .required(strings.en.errors.passwordRequired)
+            .min(8, strings.en.errors.passwordTooShort)
             .matches(
               /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-              'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+              strings.en.errors.passwordComplexity
             ),
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>Password</Text>
+            <Text>{strings.en.passwordLabel}</Text>
             <TextInput
               value={field.state.value}
               onChangeText={field.handleChange}
@@ -113,20 +126,21 @@ export function Native() {
           </YStack>
         )}
       />
+
       <MyForm.Field
         name="confirmPassword"
         validators={{
           onChangeListenTo: ['password'],
           onChange: ({ value, fieldApi }) => {
             if (value !== fieldApi.form.getFieldValue('password')) {
-              return 'Passwords do not match'
+              return strings.en.errors.confirmPasswordMismatch
             }
             return undefined
           },
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>Confirm Password</Text>
+            <Text>{strings.en.confirmPasswordLabel}</Text>
             <TextInput
               value={field.state.value}
               onChangeText={field.handleChange}
@@ -141,12 +155,14 @@ export function Native() {
       <MyForm.Field
         name="country"
         validators={{
-          onChange: yup.string().oneOf(validCountries.map(c => c.code)).required('Country is required')
+          onChange: yup.string().oneOf(validCountries.map(c => c.code)).required(strings.en.errors.countryRequired)
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>County of Residence</Text>
-            <CountrySelect value={field.state.value} handleValueChange={field.handleChange}
+            <Text>{strings.en.countryLabel}</Text>
+            <CountrySelect value={field.state.value} handleValueChange={(newVal) => {
+              field.handleChange(newVal as any)
+            }}
             />
           </YStack>
         )}
@@ -158,8 +174,8 @@ export function Native() {
           <Button
             disabled={!canSubmit || isSubmitting}
             text={canSubmit ?
-              isSubmitting ? "Submitting..." : "Register"
-              : "can't submit yet"}
+              isSubmitting ? strings.en.submittingButton : strings.en.submitButton
+              : strings.en.cantSubmitButton}
             onPress={(e: GestureResponderEvent) => {
               e.preventDefault();
               e.stopPropagation();
