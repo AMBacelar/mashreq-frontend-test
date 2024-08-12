@@ -1,8 +1,8 @@
-import { StyleSheet, Text, GestureResponderEvent } from "react-native";
+import { Text, GestureResponderEvent } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Button } from "@repo/ui";
 import { useTheme } from "../providers/theme";
-import { Input, YStack } from "tamagui";
+import { H1, Input, YStack } from "tamagui";
 import { FieldApi, useForm } from '@tanstack/react-form';
 import { yupValidator } from '@tanstack/yup-form-adapter'
 import * as yup from 'yup'
@@ -37,7 +37,7 @@ export const Login = () => {
 
   return (
     <YStack ai='center' jc='center' h='100%'>
-      <Text style={styles.header}>Login - {theme}</Text>
+      <H1 mb="$3">Login - {theme}</H1>
 
       <MyForm.Field
         name="username"
@@ -52,7 +52,6 @@ export const Login = () => {
               onChangeText={(newVal) => {
                 field.handleChange(newVal)
               }}
-              style={styles.input}
             />
             <FieldInfo field={field} />
           </YStack>
@@ -71,7 +70,6 @@ export const Login = () => {
             <Input
               value={field.state.value}
               onChangeText={field.handleChange}
-              style={styles.input}
               secureTextEntry
             />
             <FieldInfo field={field} />
@@ -105,23 +103,3 @@ export const Login = () => {
 }
 
 export default Login;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  header: {
-    fontWeight: "bold",
-    marginBottom: 20,
-    fontSize: 36,
-  },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    padding: 10,
-  }
-});
