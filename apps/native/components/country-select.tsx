@@ -18,7 +18,7 @@ export const CountrySelect = (props: SelectProps & { handleValueChange: (newVal:
       disablePreventBodyScroll
       {...props}
     >
-      <Select.Trigger width={'80%'} iconAfter={ChevronDown}>
+      <Select.Trigger iconAfter={ChevronDown}>
         <Select.Value placeholder="Something" />
       </Select.Trigger>
 

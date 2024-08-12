@@ -1,19 +1,19 @@
-import { StyleSheet, Text, TextInput, GestureResponderEvent } from "react-native";
+import { StyleSheet, Text, GestureResponderEvent } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Button } from "@repo/ui";
-import { ThemeProvider, useTheme, validCountries } from "./providers/theme";
-import { CountrySelect } from "./components/country-select";
-import { TamaguiProvider, YStack } from "tamagui";
-import tamaguiConfig from './tamagui.config';
+import { useTheme, validCountries } from "../providers/theme";
+import { CountrySelect } from "../components/country-select";
+import { Input, YStack } from "tamagui";
 import { FieldApi, useForm } from '@tanstack/react-form';
 import { yupValidator } from '@tanstack/yup-form-adapter'
 import * as yup from 'yup'
 import { useEffect, useMemo } from "react";
-import { strings } from './strings';
+import { strings } from '../strings';
+import { Link } from "expo-router";
 
 const FieldInfo = ({ field }: { field: FieldApi<any, any, any, any> }) => {
   return (
-    <YStack>
+    <YStack mb='$3'>
       {field.state.meta.isTouched && field.state.meta.errors.length ? (
         <Text>{field.state.meta.errors.join(',')}</Text>
       ) : null}
@@ -22,7 +22,7 @@ const FieldInfo = ({ field }: { field: FieldApi<any, any, any, any> }) => {
   )
 }
 
-export function Native() {
+export const Register = () => {
   const { theme, country } = useTheme();
 
   const MyForm = useForm({
@@ -60,7 +60,7 @@ export function Native() {
 
   return (
     <YStack ai='center' jc='center' h='100%'>
-      <Text style={styles.header}>{strings.en.header} {theme}</Text>
+      <Text style={styles.header}>Register - {theme}</Text>
 
       <MyForm.Field
         name="username"
@@ -72,7 +72,7 @@ export function Native() {
         children={(field) => (
           <YStack w='80%'>
             <Text>{strings.en.usernameLabel}</Text>
-            <TextInput
+            <Input
               value={field.state.value}
               onChangeText={(newVal) => {
                 field.handleChange(newVal)
@@ -92,7 +92,7 @@ export function Native() {
         children={(field) => (
           <YStack w='80%'>
             <Text>{strings.en.emailLabel}</Text>
-            <TextInput
+            <Input
               value={field.state.value}
               onChangeText={field.handleChange}
               style={styles.input}
@@ -116,7 +116,7 @@ export function Native() {
         children={(field) => (
           <YStack w='80%'>
             <Text>{strings.en.passwordLabel}</Text>
-            <TextInput
+            <Input
               value={field.state.value}
               onChangeText={field.handleChange}
               style={styles.input}
@@ -141,7 +141,7 @@ export function Native() {
         children={(field) => (
           <YStack w='80%'>
             <Text>{strings.en.confirmPasswordLabel}</Text>
-            <TextInput
+            <Input
               value={field.state.value}
               onChangeText={field.handleChange}
               style={styles.input}
@@ -158,7 +158,7 @@ export function Native() {
           onChange: yup.string().oneOf(validCountries.map(c => c.code)).required(strings.en.errors.countryRequired)
         }}
         children={(field) => (
-          <YStack w='80%'>
+          <YStack w='80%' mb='$3'>
             <Text>{strings.en.countryLabel}</Text>
             <CountrySelect value={field.state.value} handleValueChange={(newVal) => {
               field.handleChange(newVal as any)
@@ -171,35 +171,29 @@ export function Native() {
       <MyForm.Subscribe
         selector={state => [state.canSubmit, state.isSubmitting]}
         children={([canSubmit, isSubmitting]) => (
-          <Button
-            disabled={!canSubmit || isSubmitting}
-            text={canSubmit ?
-              isSubmitting ? strings.en.submittingButton : strings.en.submitButton
-              : strings.en.cantSubmitButton}
-            onPress={(e: GestureResponderEvent) => {
-              e.preventDefault();
-              e.stopPropagation();
-              MyForm.handleSubmit();
-            }}
-          />
+          <YStack mb='$3'>
+            <Button
+              disabled={!canSubmit || isSubmitting}
+              text={canSubmit ?
+                isSubmitting ? strings.en.submittingButton : strings.en.submitButton
+                : strings.en.cantSubmitButton}
+              onPress={(e: GestureResponderEvent) => {
+                e.preventDefault();
+                e.stopPropagation();
+                MyForm.handleSubmit();
+              }}
+            />
+          </YStack>
         )}
       />
+
+      <Link href="/login"><Text>Already have an account? Log in!</Text></Link>
       <StatusBar style="auto" />
     </YStack>
   );
 }
 
-const App = () => {
-  return (
-    <TamaguiProvider config={tamaguiConfig}>
-      <ThemeProvider>
-        <Native />
-      </ThemeProvider>
-    </TamaguiProvider>
-  )
-}
-
-export default App;
+export default Register;
 
 const styles = StyleSheet.create({
   container: {
