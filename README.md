@@ -1,3 +1,10 @@
+to get this app to run,
+make sure to build the shared library
+
+then run the next/expo app as normal
+
+built using yarn
+
 TODOs:
 
 - [x] monorepo setup
@@ -7,10 +14,12 @@ TODOs:
 - [x] set up i18n
 - [x] set up user country wide themeing (provider, I guess)
 - [ ] actually implement themeing with the provider somehow...
+- [ ] actually implement i18n with the provider somehow...
 - [x] log in screen
 - [ ] post log in screen
+- [x] set up web app
 
-- [ ] set up web app
+- [x] set up the server with loging (it's going to have to be a lot simpler due to time constraints, we won't validate the email)
 
 # initial assumptions
 

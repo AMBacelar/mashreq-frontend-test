@@ -1,26 +1,18 @@
 import { Text, GestureResponderEvent } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Button } from "@repo/ui";
+import { Button, Language, validators } from "@repo/shared";
 import { useTheme, validCountries } from "../providers/theme";
 import { CountrySelect } from "../components/country-select";
 import { H1, Input, YStack } from "tamagui";
-import { FieldApi, useForm } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
 import { yupValidator } from '@tanstack/yup-form-adapter'
 import * as yup from 'yup'
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { strings } from '../strings';
 import { Link } from "expo-router";
+import { FieldInfo } from "../components/field-info";
 
-const FieldInfo = ({ field }: { field: FieldApi<any, any, any, any> }) => {
-  return (
-    <YStack mb='$3'>
-      {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <Text>{field.state.meta.errors.join(',')}</Text>
-      ) : null}
-      {field.state.meta.isValidating ? <Text>{strings.en.validating}</Text> : null}
-    </YStack>
-  )
-}
+const language: Language = 'en';
 
 export const Register = () => {
   const { theme, country } = useTheme();
@@ -35,21 +27,10 @@ export const Register = () => {
     },
     onSubmit: async ({ value }) => {
       console.log(value);
-      alert(strings.en.formSubmitted);
+      alert(strings[language].formSubmitted);
     },
     validatorAdapter: yupValidator(),
   });
-
-  const usernameSchemas = useMemo(() => ({
-    'India': yup.string().required(strings.en.errors.usernameRequired)
-      .matches(/^[a-zA-Z].{5,}$/, strings.en.usernameSchemaMessages.India),
-    'Portugal': yup.string().required(strings.en.errors.usernameRequired)
-      .min(5, strings.en.usernameSchemaMessages.Portugal),
-    'UAE': yup.string().required(strings.en.errors.usernameRequired)
-      .matches(/[a-zA-Z0-9].{4,}$/, strings.en.usernameSchemaMessages.UAE),
-    'UK': yup.string().required(strings.en.errors.usernameRequired)
-      .min(5, strings.en.usernameSchemaMessages.UK),
-  }), []);
 
   useEffect(() => {
     const meta = MyForm.getFieldMeta('username');
@@ -67,11 +48,11 @@ export const Register = () => {
         validators={{
           onChangeListenTo: ['country'],
           onBlurListenTo: ['country'],
-          onChange: usernameSchemas[MyForm.getFieldValue('country')],
+          onChange: validators.registerUsernameSchemas(language)[MyForm.getFieldValue('country')],
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>{strings.en.usernameLabel}</Text>
+            <Text>{strings[language].usernameLabel}</Text>
             <Input
               value={field.state.value}
               onChangeText={(newVal) => {
@@ -86,11 +67,11 @@ export const Register = () => {
       <MyForm.Field
         name="email"
         validators={{
-          onChange: yup.string().email().required(strings.en.errors.emailRequired),
+          onChange: validators.registerEmailValidator(language),
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>{strings.en.emailLabel}</Text>
+            <Text>{strings[language].emailLabel}</Text>
             <Input
               value={field.state.value}
               onChangeText={field.handleChange}
@@ -103,17 +84,11 @@ export const Register = () => {
       <MyForm.Field
         name="password"
         validators={{
-          onChange: yup.string()
-            .required(strings.en.errors.passwordRequired)
-            .min(8, strings.en.errors.passwordTooShort)
-            .matches(
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-              strings.en.errors.passwordComplexity
-            ),
+          onChange: validators.registerPasswordValidator(language),
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>{strings.en.passwordLabel}</Text>
+            <Text>{strings[language].passwordLabel}</Text>
             <Input
               value={field.state.value}
               onChangeText={field.handleChange}
@@ -130,14 +105,14 @@ export const Register = () => {
           onChangeListenTo: ['password'],
           onChange: ({ value, fieldApi }) => {
             if (value !== fieldApi.form.getFieldValue('password')) {
-              return strings.en.errors.confirmPasswordMismatch
+              return strings[language].errors.confirmPasswordMismatch
             }
             return undefined
           },
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>{strings.en.confirmPasswordLabel}</Text>
+            <Text>{strings[language].confirmPasswordLabel}</Text>
             <Input
               value={field.state.value}
               onChangeText={field.handleChange}
@@ -151,11 +126,11 @@ export const Register = () => {
       <MyForm.Field
         name="country"
         validators={{
-          onChange: yup.string().oneOf(validCountries.map(c => c.code)).required(strings.en.errors.countryRequired)
+          onChange: yup.string().oneOf(validCountries.map(c => c.code)).required(strings[language].errors.countryRequired)
         }}
         children={(field) => (
           <YStack w='80%' mb='$3'>
-            <Text>{strings.en.countryLabel}</Text>
+            <Text>{strings[language].countryLabel}</Text>
             <CountrySelect value={field.state.value} handleValueChange={(newVal) => {
               field.handleChange(newVal as any)
             }}
@@ -171,8 +146,8 @@ export const Register = () => {
             <Button
               disabled={!canSubmit || isSubmitting}
               text={canSubmit ?
-                isSubmitting ? strings.en.submittingButton : strings.en.submitButton
-                : strings.en.cantSubmitButton}
+                isSubmitting ? strings[language].submittingButton : strings[language].submitButton
+                : strings[language].cantSubmitButton}
               onPress={(e: GestureResponderEvent) => {
                 e.preventDefault();
                 e.stopPropagation();

@@ -1,24 +1,15 @@
 import { Text, GestureResponderEvent } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Button } from "@repo/ui";
+import { Button, Language, validators } from "@repo/shared";
 import { useTheme } from "../providers/theme";
 import { H1, Input, YStack } from "tamagui";
-import { FieldApi, useForm } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
 import { yupValidator } from '@tanstack/yup-form-adapter'
-import * as yup from 'yup'
 import { strings } from '../strings';
 import { Link } from "expo-router";
+import { FieldInfo } from "../components/field-info";
 
-const FieldInfo = ({ field }: { field: FieldApi<any, any, any, any> }) => {
-  return (
-    <YStack mb='$3'>
-      {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <Text>{field.state.meta.errors.join(',')}</Text>
-      ) : null}
-      {field.state.meta.isValidating ? <Text>{strings.en.validating}</Text> : null}
-    </YStack>
-  )
-}
+const language: Language = 'en';
 
 export const Login = () => {
   const { theme } = useTheme();
@@ -42,11 +33,11 @@ export const Login = () => {
       <MyForm.Field
         name="username"
         validators={{
-          onChange: yup.string().required(strings.en.errors.usernameRequired),
+          onChange: validators.loginUsernameValidator(language),
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>{strings.en.usernameLabel}</Text>
+            <Text>{strings[language].usernameLabel}</Text>
             <Input
               value={field.state.value}
               onChangeText={(newVal) => {
@@ -61,12 +52,11 @@ export const Login = () => {
       <MyForm.Field
         name="password"
         validators={{
-          onChange: yup.string()
-            .required(strings.en.errors.passwordRequired),
+          onChange: validators.loginPasswordValidator(language),
         }}
         children={(field) => (
           <YStack w='80%'>
-            <Text>{strings.en.passwordLabel}</Text>
+            <Text>{strings[language].passwordLabel}</Text>
             <Input
               value={field.state.value}
               onChangeText={field.handleChange}
@@ -84,8 +74,8 @@ export const Login = () => {
             <Button
               disabled={!canSubmit || isSubmitting}
               text={canSubmit ?
-                isSubmitting ? strings.en.submittingButton : strings.en.submitButton
-                : strings.en.cantSubmitButton}
+                isSubmitting ? strings[language].submittingButton : strings[language].submitButton
+                : strings[language].cantSubmitButton}
               onPress={(e: GestureResponderEvent) => {
                 e.preventDefault();
                 e.stopPropagation();

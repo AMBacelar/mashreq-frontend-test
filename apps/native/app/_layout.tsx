@@ -29,7 +29,6 @@ export default function RootLayout() {
 
 
 function RootLayoutNav() {
-  console.log('hmmmm, in root layout nav');
 
   return (
     <TamaguiProvider config={tamaguiConfig}>

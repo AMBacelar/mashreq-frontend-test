@@ -9,11 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@repo/ui": "*",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@repo/shared": "*",
+    "@tanstack/react-form": "^0.29.1",
+    "@tanstack/yup-form-adapter": "^0.28.0",
+    "autoprefixer": "^10.4.20",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.427.0",
     "next": "^14.0.4",
+    "postcss": "^8.4.41",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native-web": "^0.19.10"
+    "react-native-web": "^0.19.10",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss": "^3.4.9",
+    "tailwindcss-animate": "^1.0.7",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "*",
