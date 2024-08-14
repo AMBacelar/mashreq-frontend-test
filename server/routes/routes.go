@@ -14,6 +14,9 @@ func InitRoutes() *mux.Router {
 	router.HandleFunc("/register", controllers.Register).Methods("POST")
 	router.HandleFunc("/login", controllers.Login).Methods("POST")
 
+	// Logout route
+	router.HandleFunc("/logout", controllers.Logout).Methods("POST")
+
 	// Protected routes (using JWT middleware)
 	protectedRoutes := router.PathPrefix("/protected").Subrouter()
 	protectedRoutes.Use(middlewares.JWTAuthMiddleware)

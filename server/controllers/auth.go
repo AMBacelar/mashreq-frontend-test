@@ -100,6 +100,26 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Secure:   false, // Would be set to true in production when using HTTPS
 		SameSite: http.SameSiteStrictMode,
 	})
+
+	response := map[string]string{
+		"message": "Logged in successfully",
+		"jwt":     tokenString,
+	}
+	json.NewEncoder(w).Encode(response)
+}
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "token",
+		Value:    "",
+		Expires:  time.Now().Add(-1 * time.Hour),
+		HttpOnly: true,
+		Secure:   false, // Use true in production with HTTPS
+		SameSite: http.SameSiteStrictMode,
+	})
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Logged out successfully"))
 }
 
 func validateUsername(country, username string) bool {
