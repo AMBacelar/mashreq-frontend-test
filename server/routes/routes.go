@@ -10,11 +10,12 @@ import (
 func InitRoutes() *mux.Router {
 	router := mux.NewRouter()
 
+	// Apply CORS middleware to the router
+	router.Use(middlewares.CORS)
+
 	// Public routes
 	router.HandleFunc("/register", controllers.Register).Methods("POST")
 	router.HandleFunc("/login", controllers.Login).Methods("POST")
-
-	// Logout route
 	router.HandleFunc("/logout", controllers.Logout).Methods("POST")
 
 	// Protected routes (using JWT middleware)

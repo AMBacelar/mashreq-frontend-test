@@ -9,6 +9,7 @@ import { Label } from "../../components/ui/label"
 import { useForm } from "@tanstack/react-form";
 import { yupValidator } from "@tanstack/yup-form-adapter";
 import { Language, strings, validators } from "@repo/shared";
+import { FieldInfo } from "../../components/ui/field-info";
 
 const country = 'UK';
 const language: Language = 'en';
@@ -57,6 +58,7 @@ const Register = () => {
                         field.handleChange(e.target.value);
                       }}
                     />
+                    <FieldInfo field={field} />
                   </div>
                 )}
               />
@@ -85,6 +87,7 @@ const Register = () => {
                         field.handleChange(e.target.value);
                       }}
                     />
+                    <FieldInfo field={field} />
                   </div>
                 )}
               />

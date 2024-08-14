@@ -20,12 +20,6 @@ to get this app to run,
 - to run the web app, you have `yarn run web` from the root directory
 - to run the native app, you have `yarn run native` from the root directory
 
-make sure to build the shared library
-
-then run the next/expo app as normal
-
-built using yarn
-
 TODOs:
 
 - [x] monorepo setup
@@ -41,7 +35,10 @@ TODOs:
 - [x] set up web app
 
 - [x] set up the server
-- [ ] connect the apps to the server for registering and logging users in
+
+- [ ] Set up validation depending on selected country for web
+- [ ] connect the native app to the server for registering and logging users in
+- [ ] connect the web app to the server for registering and logging users in
 - [ ] make use of the protected route to ensure that the user is allowed to see the dashboard.
 
 # initial assumptions

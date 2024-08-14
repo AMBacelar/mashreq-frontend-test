@@ -9,9 +9,30 @@ import { Label } from "../components/ui/label"
 import { useForm } from "@tanstack/react-form";
 import { yupValidator } from "@tanstack/yup-form-adapter";
 import { Language, strings, validators } from "@repo/shared";
+import { FieldInfo } from "../components/ui/field-info";
+import { redirect } from "next/navigation";
 
 const country = 'UK';
 const language: Language = 'en';
+
+const loginUrl = `http://localhost:8000/login`;
+const loginFunction = async (username: string, password: string) => new Promise((resolve, reject) => {
+  fetch(loginUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  })
+    .then(async response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch');
+      }
+      const data = await response.json();
+      resolve(data);
+    })
+    .catch(reject);
+})
 
 const Login = () => {
   const MyForm = useForm({
@@ -21,6 +42,12 @@ const Login = () => {
     },
     onSubmit: async ({ value }) => {
       console.log(value);
+      try {
+        await loginFunction(value.username, value.password);
+        redirect('/dashboard');
+      } catch (error) {
+        alert(error.message);
+      }
     },
     validatorAdapter: yupValidator(),
   });
@@ -54,6 +81,7 @@ const Login = () => {
                         field.handleChange(e.target.value);
                       }}
                     />
+                    <FieldInfo field={field} />
                   </div>
                 )}
               />
@@ -82,12 +110,29 @@ const Login = () => {
                         field.handleChange(e.target.value);
                       }}
                     />
+                    <FieldInfo field={field} />
                   </div>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
+              <MyForm.Subscribe
+                selector={state => [state.canSubmit, state.isSubmitting]}
+                children={([canSubmit, isSubmitting]) => (
+                  <div>
+                    <Button
+                      disabled={!canSubmit || isSubmitting}
+                      className="w-full"
+                      type='submit'
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        MyForm.handleSubmit();
+                      }}
+                    >{canSubmit ?
+                      isSubmitting ? 'logging in' : 'login'
+                      : "can't login yet..."}</Button>
+                  </div>
+                )}
+              />
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
