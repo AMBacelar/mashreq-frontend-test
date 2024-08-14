@@ -13,7 +13,7 @@ import { Language, strings, validators } from "@repo/shared";
 const country = 'UK';
 const language: Language = 'en';
 
-export const Register = () => {
+const Register = () => {
   const MyForm = useForm({
     defaultValues: {
       username: '',

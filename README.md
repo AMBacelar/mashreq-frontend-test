@@ -12,6 +12,14 @@ prerequisites:
 ## setup
 
 to get this app to run,
+
+1. run the go app with `make run` inside of the server folder.
+1. run `yarn` in the root directory
+1. ensure to build the necessary projects with `yarn build` in the root directory
+
+- to run the web app, you have `yarn run web` from the root directory
+- to run the native app, you have `yarn run native` from the root directory
+
 make sure to build the shared library
 
 then run the next/expo app as normal

@@ -20,7 +20,7 @@ const navLinks = [
   { href: "#", label: "Analytics" },
 ];
 
-export default function Dashboard() {
+const Dashboard = () => {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -99,3 +99,5 @@ export default function Dashboard() {
     </div>
   )
 }
+
+export default Dashboard;
