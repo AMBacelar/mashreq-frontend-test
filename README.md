@@ -1,3 +1,16 @@
+# take home test
+
+Firstly, I would like to thank you for the opportunity, I found this very fun, however life gets in the way.
+I did think I would be able to give more time to this challenge, but alas, hopefully the journey in these commits paint me in a favourable light.
+
+prerequisites:
+
+- node
+- yarn
+- golang (make)
+
+## setup
+
 to get this app to run,
 make sure to build the shared library
 
@@ -19,7 +32,9 @@ TODOs:
 - [ ] post log in screen
 - [x] set up web app
 
-- [x] set up the server with loging (it's going to have to be a lot simpler due to time constraints, we won't validate the email)
+- [x] set up the server
+- [ ] connect the apps to the server for registering and logging users in
+- [ ] make use of the protected route to ensure that the user is allowed to see the dashboard.
 
 # initial assumptions
 
